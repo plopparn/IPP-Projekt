@@ -1,0 +1,42 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link href="css.css" rel="stylesheet"/>
+		<title> William Pettersson </title>
+	</head>
+	<body>
+        <a class="lenk"	href="nyhemsida.php"> Huvudsida </a>
+		<a class="one"	href="andrasidan.php"> Resor </a>
+        <a class="two" href="mailto:wipe1801@student.miun.se"> E-post </a>
+		<a target="_blank" class="thre" href="userpage.php"> Skapa användare </a>
+		<div>
+		<?php
+            if(isset($_SESSION['userId'])) // Det som syns om användaren är inloggad.
+            {
+				echo'<h2> Välkommen </h2><p> Tyvärr så har inte vidare utveckling skett ännu </p>';
+            }
+            else // Det som syns om användaren int är inloggad.
+            {
+                echo'<form action="includes/loggin.php" method="post">  <!-- Använder sig av skriptet "loggin.php" -->
+
+                <!-- byt "text" till "password" om texten ska vara gömd. -->
+               <input type="text" name="username" placeholder="Användarnamn..."> 
+               <input type="password" name="password" placeholder="Lösenord..."> 
+   
+               <button type="submit" name="logginbutton">Logga in </button> 
+               </form><p> Logga in på webbsidan för att kunna se ärenden...</p>';
+            } // skapar fälten där användaren kan skriva in användarnamn och lösenord samt knappen för att skicka informationen till skriptet för inloggning.
+            ?>
+
+			<!-- Jag har lagt till två bilder på hemsidan, lite modifierade i storlek så de ser inte så bra ut men fyller utrymme och bringar glädje.
+			alt tillåter en lägga till en beskrivande text till bilden. -->
+			<img src="bildanton.jpg" alt="bild på anton" />
+			<img src="andrabildanton.jpg" alt="bild på anton" />
+		
+		</div>
+	</body>
+</html>
