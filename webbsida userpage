@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head> 
+		<meta charset="utf-8">
+		<title> William Pettersson </title>
+		<link href="css.css" rel="stylesheet"/>
+	</head>
+	
+	<body>
+		<a class="lenk"	href="nyhemsida.php"> Huvudsida </a>
+		<a class="one"	href="andrasidan.php"> Resor </a>
+		<a class="two"	href="mailto:wipe1801@student.miun.se"> E-post </a>
+		<a target="_blank" class="thre" href="userpage.php"> Skapa användare </a>
+		<div>
+			<h2> Skapa användare </h2>
+        
+            
+            <form action="includes/creatuser.inc.php" method="post">  <!-- Använder sig av skriptet "creatuser.inc.php" -->
+
+             <!-- byt "text" till "password" om texten ska vara gömd. -->
+            <input type="text" name="creatusername" placeholder="Användarnamn..."> 
+            <input type="text" name="email" placeholder="Epost..."> 
+            <input type="password" name="creatpassword" placeholder="Lösenord..."> 
+            <input type="password" name="creatpasswordrepeat" placeholder="Repetera lösenord...">
+
+            <button type="submit" name="creatuserbutton"> Skapa användare </button> 
+            </form>
+		</div>
+	</body>
+</html>
