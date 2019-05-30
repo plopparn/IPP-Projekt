@@ -1,0 +1,82 @@
+<?php
+
+if(isset ($_POST['creatuserbutton'])) // kollar så användaren tagit sig hit via att klickat på knappen.
+{
+    require 'database.include.php';  // använder sig av skriptet "database.include.php" så det får en anslutning mot servern.
+
+    $username = $_POST['creatusername'];
+    $email = $_POST['email'];
+    $password = $_POST['creatpassword'];
+    $passwordrepeat = $_POST['creatpasswordrepeat']; // deklarerar variabler och fyller dem med informatonen som användaren fyllt i fälten.
+
+    if(empty($username) || empty($password) || empty($passwordrepeat) || empty($email)) //kollar om något av användarnamn eller lösen saknas, i php är det generellt smidigare att kolla vad som inte fungerar istället vad som fungerar.
+    {
+        header("location: ../userpage.php?error=Användarnamn eller lösen saknas"); //Skickar tillbaka användaren med anpassat felmeddelande.
+        exit();
+    }
+    
+    else if (!filter_var($email, FILTER_VALIDATE_EMAIL))//kollar så det är ett giltigt format på eposten.
+    {
+        header("location: ../userpage.php?error=EPOST OGILTIG"); // Skickar tillbaka användaren med anpassat felmeddelande.
+        exit();
+    }
+    else if ($password !== $passwordrepeat) // Kollar så lösenorden stämmer överrens
+    {
+        header("location: ../userpage.php?error=Lösenord stämmer inte överens");//Skickar tillbaka användaren med anpassat felmeddelande.
+        exit();
+    }
+    
+    else
+    {
+        $sql ="SELECT uidUsers FROM users WHERE uidUsers=?"; 
+        $stmt =mysqli_stmt_init($connection); // tar kontakt med servern
+
+        if(!mysqli_stmt_prepare($stmt, $sql))// kollar så anslutningen lyckades
+        {
+            header("location: ../userpage.php?error"); // Skickar tillbaka användaren om anslutningen misslyckas.
+            exit();
+        }
+        else
+        {
+            mysqli_stmt_bind_param($stmt, "s", $username);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+            $reultcheck = mysqli_stmt_num_rows();
+            if ($reultcheck > 0) // kollar igenom databasen efter matchningar med det önskade användarnamndet. så inga användare har samma användarnamn.
+            {
+                header("location: ../userpage.php?error=Användarnamnet är upptaget");//Skickar tillbaka användaren med anpassat felmeddelande.
+            exit();
+            }
+            else
+            {
+                $sql = "INSERT INTO users (uidUsers, emailUsers, pwdUsers) VALUES (?, ?, ?)";
+                $stmt =mysqli_stmt_init($connection);
+                if(!mysqli_stmt_prepare($stmt, $sql)) // kollar så anslutningen lyckades
+                {
+                    header("location: ../userpage.php?error=sql problem");//Skickar tillbaka användaren med anpassat felmeddelande.
+                    exit();
+                }
+                else
+                {
+                    $hashedpassword = password_hash($password, PASSWORD_DEFAULT); //krypterar lösenordet, med bcrypt då det uppdateras ofta.
+
+                    mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedpassword); // Sparar användarnamn, användar-id, e-post samt en krypterad version av lösenordet på databasen.
+                    mysqli_stmt_execute($stmt);
+
+                    header("location: ../userpage.php?Registrering lyckades");//Skickar tillbaka användaren med anpassat meddelande om att allt gick bra.
+                    exit();
+                }
+            }
+            
+        }
+
+
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($connection); // stänger anslutningen mot servern.
+}
+else
+{
+    header("location: ../userpage.php");//Skickar tillbaka användaren men utan felmeddelande då anslutningen skedde utan knappen.
+    exit();
+}
