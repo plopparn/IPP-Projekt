@@ -1,0 +1,39 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title> William Pettersson </title>
+		<link href="css.css" rel="stylesheet"/>
+	</head>
+
+	<body>
+		<a class="lenk"	href="nyhemsida.php"> Huvudsida </a>
+		<a class="one"	href="andrasidan.php"> Resor </a>
+		<a class="two"	href="mailto:wipe1801@student.miun.se"> E-post </a>
+		<a target="_blank"	class="thre" href="userpage.php"> Skapa användare </a>
+		<div>
+            <?php
+            if(isset($_SESSION['userId']))
+            {
+				echo'<h2> Du är nu inloggad </h2><form action="includes/loggout.inc.php" method="post">
+                <button type="submit" name="loggoutbutton">Logga ut </button> 
+                </form>';
+            }
+            else
+            {
+                echo'<form action="includes/loggin.php" method="post">  <!-- Använder sig av skriptet "loggin.php" -->
+
+                <!-- "password" för att texten ska vara gömd då den skrivs in, alltså visar endast stjärnor. -->
+               <input type="text" name="username" placeholder="Användarnamn..."> 
+               <input type="password" name="password" placeholder="Lösenord..."> 
+   
+               <button type="submit" name="logginbutton">Logga in </button> 
+               </form>';
+            } // Skapar fälten där användaren kan skriva in användarnamn och lösenord samt knappen som skickar informationen till "loggin.php".
+            ?>
+		</div>
+	</body>
+</html>
