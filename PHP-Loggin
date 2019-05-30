@@ -1,0 +1,64 @@
+<?php 
+
+if(isset ($_POST['logginbutton']))// kollar så användaren faktiskt tröck på knappen för att ta sig till filen.
+{
+    require'database.include.php';
+    $name=$_POST['username']; // tar emot användarnamnet från knlick på kanpp.
+    $password=$_POST['password']; // tar emot lösen
+
+    if(empty($name) || empty($password)) //kollar om något av användarnamn eller lösen saknas, i php kollar man hellt som det int går först, sedan om det är rätt.
+    {
+        header("location: ../nyhemsida.php?error=Användarnamn eller lösen saknas");//Skickar tillbaka användaren med anpassat felmeddelande.
+        exit();
+    }
+    else
+    {
+        $sql ="SELECT * FROM users WHERE uidUsers=? OR emailUsers=?;";
+        $stmt =mysqli_stmt_init($connection);
+        if (!mysqli_stmt_prepare($stmt, $sql)) // om anslutningen inte lyckas
+        {
+            header("location: ../nyhemsida.php?error=sqlerror");//Skickar tillbaka användaren med anpassat felmeddelande.
+            exit();
+        }
+        else // om anslutningen lyckas.
+        {
+            mysqli_stmt_bind_param($stmt, "ss", $name, $name);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+
+            if ($row = mysqli_fetch_assoc($result)) // kollar så användarnamnet existerar.
+            {
+                $pwdcheck = password_verify($password, $row['pwdUsers']); // Kollar om lösenordet matchar med det som finns lagrat på databasen knunet mot användaren
+                if($pwdcheck == false) // om lösenordet inte matchar
+                {
+                    header("location: ../nyhemsida.php?error= felaktigt lösenord");//Skickar tillbaka användaren med anpassat felmeddelande.
+                    exit();
+                }
+                else if ($pwdcheck == true) // om lösenordet matchar
+                {
+                    session_start();
+                    $_SESSION['userId'] = $row['idUsers'];
+                    $_SESSION['userUid'] = $row['uidUsers'];
+
+                    header("location: ../nyhemsida.php?error= Inloggningen lyckades");//Skickar tillbaka användaren med anpassat felmeddelande.
+                    exit();
+                }
+                else // annat konstigt fel
+                {
+                    header("location: ../nyhemsida.php?error= felaktigt lösenord eller annat fel");//Skickar tillbaka användaren med anpassat felmeddelande.
+                    exit();
+                }
+            }
+            else // om användarnamnet inte finns i databasen.
+            {
+                header("location: ../nyhemsida.php?error= Fel användarnamn");header("location: ../nyhemsida.php?error= Finns ingen användare med detta namn");
+                exit();
+                
+            }
+        }
+    }
+}
+else{ // användaren tog sig hit utan att använda knappen.
+    header("location: ../nyhemsida.php?error=Testa igen");//Skickar tillbaka användaren med typ anpassat felmeddelande.
+    exit();
+}
