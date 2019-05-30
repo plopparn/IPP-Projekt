@@ -1,0 +1,13 @@
+<?php
+
+$server="localhost";
+$username="root";
+$password=""; // En del av dessa kommer sakna användning fram tills en mera allvarlig lösning på server anordnas. Just nu har servern inget lösenord till exemptel.
+$database="logginsystem";
+$connection= mysqli_connect($server, $username, $password, $database);
+//skapar anslutning till server
+
+if (!$connection)
+{
+    die ("Anslutningsproblem" .mysqli_connect_error());
+}//stänger av anslutningen och skriverut error om anslutningen inte fungerar, även riktigt errormeddelande kommer fram.
